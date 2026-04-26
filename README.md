@@ -5,33 +5,36 @@
 ---
 
 ## 📌 Project Overview
-This project addresses the limitations of conventional travel search systems by enabling **semantic and emotional searches**. Users can find destinations using natural language captions (e.g., *"Quiet Hanok village with a peaceful atmosphere"*) or by uploading photos with a specific mood. The system aligns these inputs within a shared vector space to recommend the most relevant domestic travel spots in Korea.
+This project addresses the limitations of conventional travel search systems by enabling **semantic and emotional searches**. Users can find destinations using natural language captions (e.g., *"Quiet Hanok village with a peaceful atmosphere"*) or by uploading photos with a specific mood. 
 
 ## 🛠️ Key Features
 * **Dual-Head Architecture**: Simultaneously performs Scene Classification (13 categories) and Emotional Alignment.
 * **Cross-Modal Search**: Supports both **Text-to-Image** and **Image-to-Image** retrieval.
-* **Efficient Fine-tuning**: Adopts a parameter-efficient approach by freezing the backbone and adapting task-specific heads (less than 1% of total parameters).
-* **Vector Search Engine**: Built with **FAISS** for high-speed, millisecond-level similarity search across large-scale datasets.
+* **Vector Search Engine**: Built with **FAISS** for high-speed similarity search across large-scale datasets.
+
+## 📊 Data Strategy & Dataset
+Following a **Data-centric AI** approach, I prioritized data integrity and semantic richness over simple model scaling.
+
+### 1. Data Acquisition & Taxonomy
+* **Sources**: Public tourism datasets and targeted web scraping for domestic travel destinations.
+* **Taxonomy**: 13 distinct categories for scene classification:
+  > *Sea, Mountain, Forest, City, Lake, Street, Traditional, Park, Landmark, Sculpture, Cafe, Spa, and Exhibition.*
+
+### 2. Technical Safety Net: Preprocessing & Cleaning
+To ensure **System Integrity**, I implemented a rigorous preprocessing pipeline to handle real-world "dirty" data:
+* **Duplicate Extension Handling**: Automated scripts to fix irregular file extensions (e.g., `.JPG.jpg`) and unify case sensitivity.
+* **NFC Normalization**: Resolved broken Korean text/encoding issues in metadata through **NFC (Normalization Form C)**.
+* **Integrity Validation**: Performed a full-scale scan to verify physical image existence and filtered out corrupted or missing data.
+* **AI-Driven Refinement**: Used LLMs to generate and refine semantic captions for unstructured metadata, ensuring the CLIP model understands nuanced "vibes."
 
 ## 🏗️ Model Architecture
-
 ### 1. Backbone (Frozen)
 * **Image Encoder**: Pre-trained CLIP (ViT-B/32)
 * **Text Encoder**: Multilingual DistilBERT (768-dim)
 
 ### 2. Trainable Heads
-* **Scene Classification Head**: Categorizes images into 13 major travel types (Sea, Mountain, Cafe, etc.).
-* **Projection Head**: Aligns image and text features into a common 256-dimensional latent space.
+* **Scene Classification Head**: 13-class classification.
+* **Projection Head**: Aligns image and text features into a common 256-dim space.
 
 ### 3. Objective Function
-The model is optimized by minimizing a weighted sum of three loss functions:
 $$L = L_{CLIP} + \lambda_1 L_{SupCon} + \lambda_2 L_{CE}$$
-* **$L_{CLIP}$**: Contrastive loss for text-image alignment.
-* **$L_{SupCon}$**: Supervised Contrastive loss to increase intra-class cohesion.
-* **$L_{CE}$**: Cross-Entropy loss for high-accuracy scene classification.
-
-## 📊 Data-Centric Workflow & Preprocessing
-This project follows a **Data-centric AI** approach, focusing on system integrity and data quality.
-* **Standardized Pipeline**: Implemented a rigorous data cleaning process, including duplicate extension handling (.JPG.jpg) and NFC normalization for Korean encoding issues.
-* **Technical Safety Net**: Performed full-scale validation of image file integrity and filtered missing/corrupted data to ensure **System Integrity**.
-* **Taxonomy**: Classified data into 13 distinct categories: *Sea, Mountain, Forest, City, Lake, Street, Traditional, Park, Landmark, Sculpture, Cafe, Spa, and Exhibition.*
