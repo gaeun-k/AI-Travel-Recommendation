@@ -38,3 +38,6 @@ To ensure **System Integrity**, I implemented a rigorous preprocessing pipeline 
 
 ### 3. Objective Function
 $$L = L_{CLIP} + \lambda_1 L_{SupCon} + \lambda_2 L_{CE}$$
+
+## 🧪 Model Evaluation
+[`model_select/`](./model_select) contains a Streamlit app for human evaluation of the recommendation model variants (`stage2` / `stage2_1` / `stage2_2`, see `AI/`). Reviewers compare the top-5 recommendations from each variant side by side and pick the best one; responses are logged to a Google Sheet. See [`model_select/README.md`](./model_select/README.md) for setup.
